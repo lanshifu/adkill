@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">首页去广告助手</string>
+    <string name="desc">
+        使用说明:\n\n
+        第一步 :点击app右上角的加号添加想要跳过首页广告的应用\n
+        第二步:打开这个开关,然后首页广告就会自动跳过啦</string>
+    <string name="accessibility_service_label">App跳过首页广告(名字长一点,这样容易找到我,打开试试吧0.0)</string>
+
+    <string name="about_me">
+"作者:蓝师傅
+QQ 404985095
+没什么事就不要加,有bug可以在反馈区留言,有空会去看的,因为我也在使用"</string>
+    <string name="use">
+"
+使用方法
+第一步 :点击右上角的添加按钮选择要去去广告的应用
+第二步:打开这个开关,然后就可以了体验了
+"   </string>
+
+    <string name="notice">
+        如果打开开关之后进入今日头条(或者其他有首页广告的app),发现广告没有跳过去,
+        一般是由于被安全软件禁止了权限,加入白名单重启手机即可</string>
+    <string name="what">
+        平时打开今日头条,网易云,OFO,酷狗</string>
+</resources>

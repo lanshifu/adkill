@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:icon="@mipmap/ic_launcher"
+        android:id="@+id/comment"
+        android:title="讨论区(这里有使用说明)"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/about"
+        android:title="关于我"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_add"
+        android:icon="@drawable/ic_add_circle_black_24dp"
+        android:orderInCategory="100"
+        android:tint="@android:color/white"
+        android:title="添加"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_setting"
+        android:icon="@drawable/ic_settings_applications_black_24dp"
+        android:orderInCategory="100"
+        android:tint="@android:color/white"
+        android:title="设置"
+        app:showAsAction="always"/>
+
+</menu>
