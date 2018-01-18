@@ -1,6 +1,20 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        debug {
+            keyAlias '123456'
+            keyPassword '123456'
+            storeFile file('E:/android_project/201801/adkill/key.jks')
+            storePassword '123456'
+        }
+        release {
+            keyAlias '123456'
+            keyPassword '123456'
+            storeFile file('E:/android_project/201801/adkill/key.jks')
+            storePassword '123456'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "26.0.2"
     defaultConfig {

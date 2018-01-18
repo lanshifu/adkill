@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -28,10 +29,12 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.lanshifu.adkill.KillADService;
 import com.lanshifu.adkill.R;
+import com.lanshifu.adkill.bean.DefaultData;
 import com.lanshifu.adkill.bean.KillAdDB;
 import com.lanshifu.adkill.utils.BrocastUtil;
 import com.lanshifu.adkill.utils.IconUtil;
 import com.lanshifu.adkill.utils.LogUtil;
+import com.lanshifu.adkill.utils.SPUtil;
 import com.lanshifu.adkill.utils.ToastUtil;
 
 import org.litepal.crud.DataSupport;
@@ -55,13 +58,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        refreshData();
-
         Bmob.initialize(this, "767611a082094fedc64a0633a4a8caa4");
         //初始化更新
 //        BmobUpdateAgent.initAppVersion(this);
         BmobUpdateAgent.setUpdateOnlyWifi(false);
         checkSdPermission();
+
+        //默认添加应用
+        checkFirstIn();
+    }
+
+    private void checkFirstIn() {
+        Boolean firstIn = SPUtil.getInstance().getBoolean(SPUtil.KEY_FIRST_IN);
+        if (!firstIn){
+            for (int i = 0; i < DefaultData.appNames.length; i++) {
+                String appName = DefaultData.appNames[i];
+                String firstActivity = DefaultData.firstActivitys[i];
+                String packageName = DefaultData.packageNames[i];
+                KillAdDB killAdDB = new KillAdDB();
+                killAdDB.setAppLabel(appName);
+                killAdDB.setFirstActivityName(firstActivity);
+                killAdDB.setPkgName(packageName);
+                killAdDB.setText("跳");
+                killAdDB.save();
+            }
+            SPUtil.getInstance().putBoolean(SPUtil.KEY_FIRST_IN,true);
+        }
+        refreshData();
     }
 
     private void checkSdPermission() {
@@ -120,7 +143,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAdapter = new BaseQuickAdapter<KillAdDB, BaseViewHolder>(R.layout.item_kill_appinfo) {
             @Override
             protected void convert(BaseViewHolder helper, final KillAdDB item) {
-                helper.setImageDrawable(R.id.imgApp, IconUtil.byteToDrawable(item.getIcon_base64()));
+                if (item.getIcon_base64() != null) {
+                    helper.setImageDrawable(R.id.imgApp, IconUtil.byteToDrawable(item.getIcon_base64()));
+                }
+                helper.setVisible(R.id.imgApp,item.getIcon_base64() != null);
                 helper.setText(R.id.apkName, item.getAppLabel());
                 helper.setText(R.id.pkgName, item.getPkgName());
                 helper.setText(R.id.apkVersion, item.getmVersion());
@@ -177,6 +203,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void refreshData() {
         List<KillAdDB> all = DataSupport.findAll(KillAdDB.class);
+        if (all.size() == 0){
+
+        }
         mAdapter.replaceData(all);
     }
 
@@ -266,7 +295,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void showUpdateDbDialog(final KillAdDB killAdDB) {
         View view = View.inflate(this ,R.layout.layout_update_db,null);
-        final TextView et_app = (TextView) view.findViewById(R.id.et_app);
+        final EditText et_app = (EditText) view.findViewById(R.id.et_app);
         final EditText et_package = (EditText) view.findViewById(R.id.et_package);
         final  EditText et_text = (EditText) view.findViewById(R.id.et_text);
         et_app.setText(killAdDB.getAppLabel());

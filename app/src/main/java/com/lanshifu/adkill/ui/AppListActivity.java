@@ -1,6 +1,7 @@
 package com.lanshifu.adkill.ui;
 
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
@@ -10,11 +11,15 @@ import android.content.pm.Signature;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -46,6 +51,7 @@ public class AppListActivity extends AppCompatActivity {
     private List<AppInfo> mlistAppInfo = new ArrayList<>();
     private BaseQuickAdapter<AppInfo, BaseViewHolder> mAdapter;
     private List<AppInfo> mAppInfos;
+    private List<String> mHadAddActivitys;
 
 
     @Override
@@ -68,6 +74,12 @@ public class AppListActivity extends AppCompatActivity {
                 finish();
             }
         });
+        findViewById(R.id.iv_add).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddDialog();
+            }
+        });
         mRecyclerView = (RecyclerView) findViewById(R.id.recycclerview);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         mAdapter = new BaseQuickAdapter<AppInfo, BaseViewHolder>(R.layout.item_appinfo, new ArrayList<AppInfo>()) {
@@ -80,6 +92,7 @@ public class AppListActivity extends AppCompatActivity {
                 helper.setText(R.id.apkVersion, item.getmVersion());
                 helper.setText(R.id.sigmd5, item.getSigmd5());
                 helper.setText(R.id.first_act, item.getFirstActivityName());
+                helper.setVisible(R.id.iv_had_add, mHadAddActivitys.contains(item.getFirstActivityName()));
             }
         };
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -94,14 +107,49 @@ public class AppListActivity extends AppCompatActivity {
     }
 
 
+    private void showAddDialog() {
+        View view = View.inflate(this ,R.layout.layout_update_db,null);
+        final EditText et_app = (EditText) view.findViewById(R.id.et_app);
+        final EditText et_first_activity = (EditText) view.findViewById(R.id.et_package);
+        final  EditText et_text = (EditText) view.findViewById(R.id.et_text);
+        new AlertDialog.Builder(this)
+                .setTitle("手动添加应用")
+                .setView(view)
+                .setCancelable(false)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        KillAdDB db = new  KillAdDB();
+                        db.setFirstActivityName(et_first_activity.getText().toString());
+                        db.setText(et_text.getText().toString());
+                        db.setAppLabel(et_app.getText().toString());
+                        db.save();
+                        ToastUtil.showShort("保存成功");
+                    }
+                })
+                .setNegativeButton("取消",null).show();
+    }
+
+
     private void initData() {
         new Thread() {
             @Override
             public void run() {
+                List<KillAdDB> mKillAdDBs = DataSupport.findAll(KillAdDB.class);
+                mHadAddActivitys = new ArrayList<String>();
+                for (KillAdDB killAdDB : mKillAdDBs) {
+                    mHadAddActivitys.add(killAdDB.getFirstActivityName());
+                }
+
+
                 mAppInfos = queryAppInfo();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+
+                        //如果第一次加载，把默认几个加到数据库
+                        // TODO: 2018/1/19  
                         progressBar.setVisibility(View.GONE);
                         mAdapter.replaceData(mAppInfos);
                     }
@@ -130,8 +178,9 @@ public class AppListActivity extends AppCompatActivity {
         db.setIcon_base64(IconUtil.drawableToByte(appInfo.getAppIcon()));
         boolean save = db.save();
         BrocastUtil.sendUpdateDBBroccast();
+
         setResult(RESULT_OK);
-        finish();
+        initData();
     }
 
     // 获得所有启动Activity的信息，类似于Launch界面

@@ -106,7 +106,7 @@ public class KillADService extends BaseAccessibilityService {
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(BrocastUtil.ACCTION_UPDATE)) {
                 //数据库更新
-                LogUtil.d("收到通知,查询数据库");
+//                LogUtil.d("收到通知,查询数据库");
                 refreshData();
             }
 

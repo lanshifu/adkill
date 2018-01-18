@@ -30,6 +30,7 @@ public class SPUtil {
 
     private static final String PRES_NAME = "setting";
     public static final String KEY_SHOW_PASS_TOAST = "show_pass_toast";
+    public static final String KEY_FIRST_IN = "first_in";
 
     
     private SharedPreferences mSharePres;
