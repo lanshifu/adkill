@@ -65,7 +65,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         checkSdPermission();
 
         //默认添加应用
-        checkFirstIn();
+//        checkFirstIn();
+        refreshData();
     }
 
     private void checkFirstIn() {
@@ -204,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void refreshData() {
         List<KillAdDB> all = DataSupport.findAll(KillAdDB.class);
         if (all.size() == 0){
-
+            ToastUtil.showShort("还没有添加应用");
         }
         mAdapter.replaceData(all);
     }

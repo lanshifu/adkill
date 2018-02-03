@@ -110,7 +110,8 @@ public class AppListActivity extends AppCompatActivity {
     private void showAddDialog() {
         View view = View.inflate(this ,R.layout.layout_update_db,null);
         final EditText et_app = (EditText) view.findViewById(R.id.et_app);
-        final EditText et_first_activity = (EditText) view.findViewById(R.id.et_package);
+        final EditText et_package = (EditText) view.findViewById(R.id.et_package);
+        final EditText et_first_activity = (EditText) view.findViewById(R.id.et_first_activity);
         final  EditText et_text = (EditText) view.findViewById(R.id.et_text);
         new AlertDialog.Builder(this)
                 .setTitle("手动添加应用")
@@ -121,6 +122,7 @@ public class AppListActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         KillAdDB db = new  KillAdDB();
+                        db.setPkgName(et_package.getText().toString());
                         db.setFirstActivityName(et_first_activity.getText().toString());
                         db.setText(et_text.getText().toString());
                         db.setAppLabel(et_app.getText().toString());

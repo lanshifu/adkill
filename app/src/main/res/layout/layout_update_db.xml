@@ -16,6 +16,17 @@
         android:id="@+id/et_app"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="包名"/>
+
+    <EditText
+        android:padding="8dp"
+        android:id="@+id/et_package"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -24,7 +35,7 @@
         android:text="首页activity"/>
 
     <EditText
-        android:id="@+id/et_package"
+        android:id="@+id/et_first_activity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -36,6 +47,7 @@
 
     <EditText
         android:id="@+id/et_text"
+        android:text="跳过"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
